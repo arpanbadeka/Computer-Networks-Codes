@@ -1,0 +1,30 @@
+#include<stdio.h>
+#include<netinet/in.h>
+#include<sys/types.h>
+#include<string.h>
+#include<sys/socket.h>
+
+#define serv_tcp_port 6460
+#define serv_host_addr "10.10.131.132"
+
+main()
+{
+ int s,sid,clien,nsid;
+ char buff[20],buff1[20];
+ struct sockaddr_in servaddr;
+ struct sockaddr_in cliaddr;
+ sid=socket(AF_INET,SOCK_DGRAM,0);
+if(sid>0)
+printf("Success\n");
+
+ servaddr.sin_family=AF_INET;
+ servaddr.sin_port=htons(serv_tcp_port);
+ servaddr.sin_addr.s_addr=inet_addr(serv_host_addr);
+ printf("Enter the Message\n");
+ scanf("%s",&buff);
+ sendto(sid,buff,20,0,(struct sockaddr *) &servaddr,sizeof(servaddr));
+ clien=sizeof(cliaddr);
+ recvfrom(sid,buff1,sizeof(buff1),0,(struct sockaddr *)&cliaddr,&clien);
+ printf("\nReceived/ECHO data is : %s\n",buff1);
+ close(sid);
+}

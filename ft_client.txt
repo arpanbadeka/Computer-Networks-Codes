@@ -1,0 +1,51 @@
+#include<stdio.h>
+#include<netinet/in.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<arpa/inet.h>
+#include<string.h>
+#include<fcntl.h>
+#define serv_tcp_port 2000
+#define serv_host_addr "10.10.131.132"
+main()
+{
+        int s, sid, pid, clien, nsid,ser;
+        char buff[20];
+        struct sockaddr_in seraddr;
+        struct sockaddr_in cliaddr;
+        FILE *f1;
+f1=fopen("test1.txt","r");
+char string[100];
+char ch;
+int i=0;
+while(1)
+{ ch=fgetc(f1);
+  if(ch==EOF)
+{ break;
+}
+else
+{
+string[i]=ch;
+
+i++;
+}
+}
+      sid = socket(AF_INET,SOCK_STREAM,0);
+          if(sid>0)
+          printf("Success");
+        seraddr.sin_family = AF_INET;
+        seraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+       seraddr.sin_port = htons(serv_tcp_port);
+        seraddr.sin_addr.s_addr=inet_addr(serv_host_addr);
+    ser=sizeof(seraddr);
+
+connect(sid,(struct sockaddr*)&seraddr,sizeof(seraddr));
+
+
+       send(sid,string,100,0);
+
+
+       close(nsid);
+printf("%s",string);
+
+}

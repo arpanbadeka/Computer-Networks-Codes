@@ -1,0 +1,67 @@
+#include<stdio.h>
+#include<sys/socket.h>
+#include<sys/types.h>
+#include<netinet/in.h>
+#include<string.h>
+
+
+#define serv_tcp_port 7475
+#define serv_host_addr "10.10.131.132"
+
+main()
+{
+  int s,sid,pid,clien,nsid,i,flag=0;
+  char buff[10];
+   char buff1[5];
+  char uname[3][10]={"Venu","Gopal","Mari"};
+   char pass[3][5]={"12345","1234","123"};
+
+  char un[10],ps[5];
+  struct sockaddr_in seraddr;
+  struct sockaddr_in cliaddr;
+
+  sid=socket(AF_INET,SOCK_STREAM,0);
+  seraddr.sin_family=AF_INET;
+  seraddr.sin_addr.s_addr=htonl(INADDR_ANY);
+  seraddr.sin_port=htons(serv_tcp_port);
+
+  s=bind(sid,(struct sockaddr *) &seraddr,sizeof(seraddr));
+  listen(sid,1);
+  clien=sizeof(cliaddr);
+  nsid=accept(sid,(struct sockaddr *)&cliaddr,&clien);
+
+ recv(nsid,buff,sizeof(buff),0);
+ strcpy(un,buff);
+  recv(nsid,buff1,sizeof(buff1),0);
+ strcpy(ps,buff1);
+ printf("%s",un);
+ printf("%s",ps);
+  for(i=0;i<3;i++)
+  {
+   if(strcmp(un,uname[i])==0)
+   {
+    if(strcmp(ps,pass[i])==0)
+    {
+      printf("\n\n Login Successfull\n" );
+      send(nsid,"Login Successfull",30,0);
+      break;
+    }
+   else
+     {
+     printf("\nIncorrect Password\n");
+     send(nsid,"Incorrect Password",30,0);
+     break;
+     }
+   }
+   else
+    { flag++;}
+
+}
+    if(flag==3)
+{
+     printf("\nInvalid UserName\n");
+     send(nsid,"Invalid Username",30,0);
+     }
+
+  close(nsid);
+ }

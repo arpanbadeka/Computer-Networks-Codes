@@ -1,0 +1,41 @@
+#include<stdio.h>
+#include<netinet/in.h>
+#include<sys/types.h>
+#include<string.h>
+#include<sys/socket.h>
+
+#define serv_tcp_port 6300
+#define serv_host_addr "127.0.0.1"
+
+main()
+{
+ int s,sid,clien,nsid,i;
+ char buff[20],buff1[20];
+ struct sockaddr_in seraddr;
+ struct sockaddr_in cliaddr;
+ sid=socket(AF_INET,SOCK_STREAM,0);
+ if(sid>0)
+ printf("Success\n");
+ seraddr.sin_family=AF_INET;
+ seraddr.sin_port=htons(serv_tcp_port);
+ seraddr.sin_addr.s_addr=inet_addr(serv_host_addr);
+
+
+ connect(sid,(struct sockaddr *)&seraddr,sizeof(seraddr));
+
+while(strcmp(buff1,"bye")!=0)
+ {
+ printf("Enter the msg");
+ scanf("%s",&buff);
+ send(sid,buff,20,0);
+ recv(sid,buff1,20,0);
+ printf("%s",buff1);
+ if(strcmp(buff1,"bye")==0)
+ {
+ printf("Enter the Message\n");
+ scanf("%s",&buff);
+ send(sid,buff,20,0);
+ close(sid);
+}
+}
+}
